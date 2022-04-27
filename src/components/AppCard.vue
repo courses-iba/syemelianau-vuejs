@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" :class="this.cardColor" @click="this.toggleColor">
     <div class="header">{{ this.title }}</div>
     <AppDivider />
     <div class="content">
@@ -15,8 +15,26 @@ export default {
   components: {
     AppDivider
   },
+  data() {
+    return {
+      color: null
+    };
+  },
   props: {
     title: String
+  },
+  computed: {
+    cardColor() {
+      return `card${this.color}`;
+    }
+  },
+  methods: {
+    randomColor() {
+      return Math.floor(Math.random() * 5) + 1;
+    },
+    toggleColor() {
+      this.color = this.color ? null : this.randomColor();
+    }
   }
 };
 </script>
@@ -51,5 +69,30 @@ export default {
 
 .header, .content {
   padding: 0 5%;
+}
+
+.card1 {
+  background-color: #f1f8ff;
+  border-color: #c8e1ff;
+}
+
+.card2 {
+  background-color: #f0fff4;
+  border-color: #bef5cb;
+}
+
+.card3 {
+  background-color: #fffdef;
+  border-color: #fff5b1;
+}
+
+.card4 {
+  background-color: #fff8f2;
+  border-color: #ffd1ac;
+}
+
+.card5 {
+  background-color: #f5f0ff;
+  border-color: #d1bcf9;
 }
 </style>
