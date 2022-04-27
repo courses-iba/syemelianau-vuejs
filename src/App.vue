@@ -1,26 +1,62 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="app">
+    <AppHeader title="Vue App" />
+    <AppContent>
+      <AppCard v-for="{id, title, content} in cards" :key="id" :title="title">
+        {{ content }}
+      </AppCard>
+    </AppContent>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AppHeader from '@/components/AppHeader';
+import AppContent from '@/components/AppContent';
+import AppCard from '@/components/AppCard';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    AppHeader,
+    AppContent,
+    AppCard
+  },
+  data() {
+    return {
+      cards: [...Array(18).keys()].map((value, index) => ({
+        id: index,
+        title: `Card Title ${value}`,
+        content: `
+            ${value}.
+            Some quick example text
+            to build on the card title
+            and make up the bulk of the card's content.
+        `.replace(/\s+/g, ' ').trim()
+      }))
+    };
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
 }
 </style>

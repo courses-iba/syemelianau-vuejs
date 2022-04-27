@@ -1,0 +1,55 @@
+<template>
+  <div class="card">
+    <div class="header">{{ this.title }}</div>
+    <AppDivider />
+    <div class="content">
+      <slot />
+    </div>
+  </div>
+</template>
+
+<script>
+import AppDivider from '@/components/AppDivider';
+
+export default {
+  components: {
+    AppDivider
+  },
+  props: {
+    title: String
+  }
+};
+</script>
+
+<style scoped>
+.card {
+  padding: 1vh;
+  margin: 1vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  width: 10vw;
+  min-width: 10em;
+  max-width: 20em;
+  transition: 0.3s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card:active {
+  transition: none;
+  background-color: #f1f8ff;
+  border-color: #c8e1ff;
+}
+
+.header {
+  font-weight: bold;
+}
+
+.header, .content {
+  padding: 0 5%;
+}
+</style>
