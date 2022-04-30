@@ -2,9 +2,13 @@
   <div class="app">
     <AppHeader title="Vue App" />
     <AppContent>
-      <AppCard v-for="{id, title, content} in cards" :key="id" :title="title">
-        {{ content }}
-      </AppCard>
+      <AppCard
+          v-for="{id, title, content} in cards"
+          :key="id"
+          :title="title"
+          :content="content"
+          @edit="card => this.editCard(id, card)"
+      />
     </AppContent>
   </div>
 </template>
@@ -34,6 +38,11 @@ export default {
         `.replace(/\s+/g, ' ').trim()
       }))
     };
+  },
+  methods: {
+    editCard(id, card) {
+      this.cards = this.cards.map(value => value.id === id ? { id, ...card } : value);
+    }
   }
 };
 </script>
