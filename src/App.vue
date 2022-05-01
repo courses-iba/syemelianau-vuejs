@@ -1,13 +1,20 @@
 <template>
   <div class="app">
     <AppHeader title="Vue App" />
+    <AppMenu>
+      <AppCheckbox
+          name="Readonly"
+          :checked="this.readonly"
+          @change="this.toggleReadonly"
+      />
+    </AppMenu>
     <AppContent>
       <AppCard
-          v-for="{id, title, content} in cards"
+          v-for="{id, content} in this.mockCards"
           :key="id"
-          :title="title"
           :content="content"
-          @edit="card => this.editCard(id, card)"
+          :readonly="this.readonly"
+          @edit="newContent => this.editCard(id, newContent)"
       />
     </AppContent>
   </div>
@@ -17,31 +24,41 @@
 import AppHeader from '@/components/AppHeader';
 import AppContent from '@/components/AppContent';
 import AppCard from '@/components/AppCard';
+import AppMenu from '@/components/AppMenu';
+import AppCheckbox from '@/components/AppCheckbox';
 
 export default {
   name: 'App',
   components: {
+    AppCheckbox,
+    AppMenu,
     AppHeader,
     AppContent,
     AppCard
   },
   data() {
     return {
-      cards: [...Array(18).keys()].map((value, index) => ({
+      readonly: false,
+      mockCards: [...Array(18).keys()].map((value, index) => ({
         id: index,
-        title: `Card Title ${value}`,
-        content: `
+        content: {
+          title: `Card Title ${value}`,
+          description: `
             ${value}.
             Some quick example text
             to build on the card title
             and make up the bulk of the card's content.
-        `.replace(/\s+/g, ' ').trim()
+          `.replace(/\s+/g, ' ').trim()
+        }
       }))
     };
   },
   methods: {
-    editCard(id, card) {
-      this.cards = this.cards.map(value => value.id === id ? { id, ...card } : value);
+    editCard(id, newContent) {
+      this.mockCards = this.mockCards.map(value => value.id === id ? { id, content: newContent } : value);
+    },
+    toggleReadonly() {
+      this.readonly = !this.readonly;
     }
   }
 };

@@ -1,33 +1,49 @@
 <template>
   <div class="card" :class="this.color" @click="this.toggleChecked">
-    <div class="header">
-      <input
-          v-if="this.isEdit"
-          class="input"
-          :value="this.card.title"
-          @change="this.changeTitle"
-      />
-      <span v-else class="title">{{ this.title }}</span>
-      <div class="buttons">
-        <button v-if="this.isEdit" class="button" @click="this.editCard">
-          <Check :style="this.iconStyle" />
-        </button>
-        <button class="button" @click="this.toggleEdit">
-          <Close v-if="this.isEdit" :style="this.iconStyle" />
-          <Pencil v-else :style="this.iconStyle" />
-        </button>
+    <div v-if="this.readonly">
+      <div class="header">
+        <span class="title">{{ this.content.title }}</span>
       </div>
+      <AppDivider />
+      <div class="body">{{ this.content.description }}</div>
     </div>
-    <AppDivider />
-    <div class="content">
+    <div v-else-if="this.isEdit">
+      <div class="header">
+        <input
+            class="input"
+            :value="this.newContent.title"
+            @change="this.changeTitle"
+        />
+        <div class="buttons">
+          <button class="button" @click="this.editCard">
+            <Check :style="this.iconStyle" />
+          </button>
+          <button class="button" @click="this.toggleEdit">
+            <Close :style="this.iconStyle" />
+          </button>
+        </div>
+      </div>
+      <AppDivider />
+      <div class="body">
       <textarea
-          v-if="this.isEdit"
           class="input"
-          :style="{height: this.height}"
-          :value="this.card.content"
+          :style="{ height: this.height }"
+          :value="this.newContent.description"
           @change="this.changeContent"
       />
-      <span v-else>{{ this.content }}</span>
+      </div>
+    </div>
+    <div v-else>
+      <div class="header">
+        <span class="title">{{ this.content.title }}</span>
+        <div class="buttons">
+          <button class="button" @click="this.toggleEdit">
+            <Pencil :style="this.iconStyle" />
+          </button>
+        </div>
+      </div>
+      <AppDivider />
+      <div class="body">{{ this.content.description }}</div>
     </div>
   </div>
 </template>
@@ -44,14 +60,17 @@ export default {
     AppDivider
   },
   props: {
-    title: String,
-    content: String
+    readonly: Boolean,
+    content: {
+      title: String,
+      description: String
+    }
   },
   data() {
     return {
       checked: null,
       isEdit: false,
-      card: { title: this.title, content: this.content },
+      newContent: this.content,
       iconStyle: { color: '#586069', fontSize: '24px' }
     };
   },
@@ -61,9 +80,16 @@ export default {
     },
     height() {
       const min = 2;
-      const max = this.card.content.length / 20;
+      const max = this.newContent.description.length / 20;
       const res = max < min ? min : max;
       return `${res}em`;
+    }
+  },
+  watch: {
+    readonly(value) {
+      if (value) {
+        this.isEdit = false;
+      }
     }
   },
   methods: {
@@ -75,17 +101,17 @@ export default {
       e?.stopPropagation();
       this.checked = null;
       this.isEdit = !this.isEdit;
-      this.card = { title: this.title, content: this.content };
+      this.newContent = this.content;
     },
     changeTitle(event) {
-      this.card = { ...this.card, title: event.target.value };
+      this.newContent = { ...this.newContent, title: event.target.value };
     },
     changeContent(event) {
-      this.card = { ...this.card, content: event.target.value };
+      this.newContent = { ...this.newContent, description: event.target.value };
     },
     editCard(e) {
       e?.stopPropagation();
-      this.$emit('edit', this.card);
+      this.$emit('edit', this.newContent);
       this.toggleEdit();
     }
   }
@@ -122,11 +148,11 @@ export default {
   font-weight: bold;
 }
 
-.header, .content {
+.header, .body {
   padding: 0 5%;
 }
 
-.content, .title {
+.body, .title {
   overflow: hidden;
   text-overflow: ellipsis;
 }
