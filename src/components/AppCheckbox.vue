@@ -1,16 +1,13 @@
 <template>
   <button
       class="checkbox"
-      :class="{checked: this.checked,  unchecked: !this.checked}"
-      @click="this.$emit('change')"
+      :class="{checked: checked,  unchecked: !checked}"
+      @click="$emit('change')"
   >
-    <CheckboxMarked v-if="this.checked" :style="this.iconStyle" />
-    <CheckboxBlankOutline v-else :style="this.iconStyle" />
-    <span
-        class="name"
-        :class="{checkedName: this.checked, uncheckedName: !this.checked}"
-    >
-      {{ this.name }}
+    <CheckboxMarked v-if="checked" :style="iconStyle" />
+    <CheckboxBlankOutline v-else :style="iconStyle" />
+    <span class="name" :class="{checkedName: checked, uncheckedName: !checked}">
+      {{ name }}
     </span>
   </button>
 </template>
@@ -29,10 +26,7 @@ export default {
   },
   computed: {
     iconStyle() {
-      return {
-        color: this.checked ? '#1675e0' : '#8e8e93',
-        fontSize: '24px'
-      };
+      return { color: this.checked ? '#1675e0' : '#8e8e93', fontSize: '24px' };
     }
   }
 };

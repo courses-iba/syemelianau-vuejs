@@ -4,42 +4,51 @@
     <AppMenu>
       <AppCheckbox
           name="Readonly"
-          :checked="this.readonly"
-          @change="this.toggleReadonly"
+          :checked="readonly"
+          @change="handleReadonly"
       />
+      <button :class="iButton" @click="handleDelete">
+        <Delete :style="iconStyle" />
+      </button>
     </AppMenu>
     <AppContent>
-      <AppCard
-          v-for="{id, content} in this.mockCards"
-          :key="id"
-          :content="content"
-          :readonly="this.readonly"
-          @edit="newContent => this.editCard(id, newContent)"
+      <CardList
+          v-if="cards.length"
+          :cards="cards"
+          :readonly="readonly"
+          @editCard="handleEdit"
+          @checkCard="handleCheck"
       />
+      <span v-else class="empty">Cards not found</span>
     </AppContent>
   </div>
 </template>
 
 <script>
-import AppHeader from '@/components/AppHeader';
-import AppContent from '@/components/AppContent';
-import AppCard from '@/components/AppCard';
-import AppMenu from '@/components/AppMenu';
+import { Delete } from 'mdue';
+import AppHeader from '@/containers/AppHeader';
+import AppContent from '@/containers/AppContent';
+import CardList from '@/components/CardList';
+import AppMenu from '@/containers/AppMenu';
 import AppCheckbox from '@/components/AppCheckbox';
+import { iButton } from './styles/AppButton.module.css';
 
 export default {
   name: 'App',
   components: {
+    Delete,
     AppCheckbox,
     AppMenu,
     AppHeader,
     AppContent,
-    AppCard
+    CardList
   },
   data() {
     return {
+      iButton,
       readonly: false,
-      mockCards: [...Array(18).keys()].map((value, index) => ({
+      iconStyle: { color: '#1675e0', fontSize: '24px' },
+      cards: [...Array(18).keys()].map((value, index) => ({
         id: index,
         content: {
           title: `Card Title ${value}`,
@@ -49,16 +58,23 @@ export default {
             to build on the card title
             and make up the bulk of the card's content.
           `.replace(/\s+/g, ' ').trim()
-        }
+        },
+        checked: null
       }))
     };
   },
   methods: {
-    editCard(id, newContent) {
-      this.mockCards = this.mockCards.map(value => value.id === id ? { id, content: newContent } : value);
-    },
-    toggleReadonly() {
+    handleReadonly() {
       this.readonly = !this.readonly;
+    },
+    handleEdit(id, content) {
+      this.cards = this.cards.map(card => card.id === id ? { ...card, content } : card);
+    },
+    handleCheck(id, checked) {
+      this.cards = this.cards.map(card => card.id === id ? { ...card, checked } : card);
+    },
+    handleDelete() {
+      this.cards = this.cards.filter(({ checked }) => !checked);
     }
   }
 };
@@ -84,5 +100,10 @@ code {
 .app {
   display: flex;
   flex-direction: column;
+}
+
+.empty {
+  color: red;
+  text-align: center;
 }
 </style>
