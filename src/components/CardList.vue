@@ -1,23 +1,25 @@
 <template>
   <div class="list">
-    <AppCard
-        v-for="{id, content, checked} in cards"
-        :key="id"
-        :content="content"
-        :checked="checked"
-        :readonly="readonly"
-        @edit="newContent => $emit('editCard', id, newContent)"
-        @check="newCheck => $emit('checkCard', id, newCheck)"
-    />
+    <CardLoad v-for="{id, content, checked} in cards" :key="id">
+      <AppCard
+          :content="content"
+          :checked="checked"
+          :readonly="readonly"
+          @edit="newContent => $emit('editCard', id, newContent)"
+          @check="newCheck => $emit('checkCard', id, newCheck)"
+      />
+    </CardLoad>
   </div>
 </template>
 
 <script>
 import AppCard from '@/components/AppCard/AppCard';
+import CardLoad from '@/components/AppCard/CardLoad';
 
 export default {
   components: {
-    AppCard
+    AppCard,
+    CardLoad
   },
   props: {
     cards: {

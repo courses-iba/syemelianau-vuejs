@@ -77,3 +77,13 @@
     outline: none;
     resize: none;
 }
+
+.load {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader {
+    padding: 3vh;
+}
