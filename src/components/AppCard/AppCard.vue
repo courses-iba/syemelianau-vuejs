@@ -61,7 +61,7 @@ export default {
     return {
       styles,
       iButton,
-      isEdit: false,
+      isEdit: !!this.checked,
       newContent: this.content,
       iconStyle: { color: '#586069', fontSize: '24px' }
     };
@@ -81,7 +81,9 @@ export default {
   methods: {
     toggleChecked() {
       const randomState = Math.floor(Math.random() * 5) + 1;
-      this.$emit('check', this.isEdit || this.checked ? null : randomState);
+      if (!(this.isEdit && this.checked)) {
+        this.$emit('check', this.isEdit || this.checked ? null : randomState);
+      }
     },
     toggleEdit(e) {
       e?.stopPropagation();

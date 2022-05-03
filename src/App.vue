@@ -7,6 +7,9 @@
           :checked="readonly"
           @change="handleReadonly"
       />
+      <button :class="iButton" @click="handleAdd">
+        <Plus :style="iconStyle" />
+      </button>
       <button :class="iButton" @click="handleDelete">
         <Delete :style="iconStyle" />
       </button>
@@ -25,7 +28,8 @@
 </template>
 
 <script>
-import { Delete } from 'mdue';
+import { Delete, Plus } from 'mdue';
+import { v4 as uuid } from 'uuid';
 import AppHeader from '@/containers/AppHeader';
 import AppContent from '@/containers/AppContent';
 import CardList from '@/components/CardList';
@@ -37,6 +41,7 @@ export default {
   name: 'App',
   components: {
     Delete,
+    Plus,
     AppCheckbox,
     AppMenu,
     AppHeader,
@@ -48,8 +53,8 @@ export default {
       iButton,
       readonly: false,
       iconStyle: { color: '#1675e0', fontSize: '24px' },
-      cards: [...Array(18).keys()].map((value, index) => ({
-        id: index,
+      cards: [...Array(18).keys()].map(value => ({
+        id: uuid(),
         content: {
           title: `Card Title ${value}`,
           description: `
@@ -75,6 +80,16 @@ export default {
     },
     handleDelete() {
       this.cards = this.cards.filter(({ checked }) => !checked);
+    },
+    handleAdd() {
+      this.cards = [...this.cards, {
+        id: uuid(),
+        content: {
+          title: 'Edit me!',
+          description: 'Me too :)'
+        },
+        checked: Math.floor(Math.random() * 5) + 1
+      }];
     }
   }
 };
