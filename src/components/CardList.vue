@@ -1,6 +1,8 @@
 <template>
   <div class="list">
-    <span v-if="isEmpty" class="empty">{{ placeholder }}</span>
+    <GridLoader v-if="loading" :color="loader" :class="styles.loader" />
+    <span v-else-if="error" class="empty">{{ error }}</span>
+    <span v-else-if="isEmpty" class="empty">{{ placeholder }}</span>
     <CardLoad v-else v-for="card in cards" :key="card.id">
       <AppCard v-bind="card" />
     </CardLoad>
@@ -8,23 +10,36 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
+import GridLoader from 'vue-spinner/src/GridLoader';
+
 import AppCard from '@/components/AppCard/AppCard';
 import CardLoad from '@/components/AppCard/CardLoad';
+import styles from '@/components/AppCard/AppCard.module.css';
 
 export default {
   components: {
+    GridLoader,
     AppCard,
     CardLoad
+  },
+  data() {
+    return {
+      styles
+    };
   },
   props: {
     placeholder: String
   },
   computed: {
-    ...mapState(['cards']),
+    ...mapState(['cards', 'loading', 'error', 'loader']),
     isEmpty() {
       return !this.$store.getters.cardsCount;
     }
+  },
+  methods: mapActions(['getCards']),
+  mounted() {
+    this.getCards();
   }
 };
 </script>

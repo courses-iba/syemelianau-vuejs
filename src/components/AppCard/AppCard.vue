@@ -35,13 +35,13 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { Pencil, Close, Check } from 'mdue';
+
 import AppDivider from '@/components/AppDivider';
 import CardHeader from '@/components/AppCard/CardHeader';
 import CardBody from '@/components/AppCard/CardBody';
-import * as types from '@/store/mutation-types';
 import { randomState } from '@/utils';
-import styles from './AppCard.module.css';
-import { iButton } from '../../styles/AppButton.module.css';
+import styles from '@/components/AppCard/AppCard.module.css';
+import { iButton } from '@/styles/AppButton.module.css';
 
 export default {
   components: {
@@ -81,7 +81,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      handleEdit: types.UPDATE
+      handleEdit: 'updateCard'
     }),
     toggleChecked() {
       if (!(this.isEdit && this.checked)) {

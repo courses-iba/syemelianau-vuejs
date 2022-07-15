@@ -1,7 +1,9 @@
 import { createStore, createLogger } from 'vuex';
 import { v4 as uuid } from 'uuid';
+
 import { randomState } from '@/utils';
-import * as types from '@/store/mutation-types';
+import * as types from '@/store/mutation.types';
+import { getPokemon } from '@/services/pokemon.service';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -10,21 +12,12 @@ export const store = createStore({
     plugins: debug ? [createLogger()] : [],
     state() {
         return {
-            cards: [...Array(18).keys()].map(value => ({
-                id: uuid(),
-                content: {
-                    title: `Card Title ${value}`,
-                    description: `
-                        ${value}.
-                        Some quick example text
-                        to build on the card title
-                        and make up the bulk of the card's content.
-                    `.replace(/\s+/g, ' ').trim()
-                },
-                checked: null
-            })),
+            cards: [],
             readonly: false,
-            iSize: { fontSize: '24px' }
+            loading: true,
+            error: null,
+            iSize: { fontSize: '24px' },
+            loader: '#36d7b7'
         };
     },
     getters: {
@@ -45,15 +38,36 @@ export const store = createStore({
         [types.UPDATE](state, payload) {
             state.cards = payload;
         },
-        [types.DELETE](state, payload) {
-            state.cards = payload;
-        },
         [types.READONLY](state, payload) {
             state.readonly = payload;
+        },
+        [types.LOAD](state, payload) {
+            state.loading = payload;
+        },
+        [types.ERROR](state, payload) {
+            state.error = payload;
         }
     },
     actions: {
-        [types.CREATE]({ commit }) {
+        getCards({ commit }) {
+            commit(types.LOAD, true);
+            getPokemon().then(response => {
+                const pokemonCards = response.data.slice(0, 15).map(pokemon => ({
+                    id: pokemon.Number,
+                    content: {
+                        title: pokemon.Name,
+                        description: pokemon.About
+                    },
+                    checked: null
+                }));
+                commit(types.UPDATE, pokemonCards);
+                commit(types.LOAD, false);
+            }).catch(reason => {
+                commit(types.ERROR, reason.message);
+                commit(types.LOAD, false);
+            });
+        },
+        createCard({ commit }) {
             commit(types.CREATE, {
                 id: uuid(),
                 content: {
@@ -63,15 +77,15 @@ export const store = createStore({
                 checked: randomState()
             });
         },
-        [types.UPDATE]({ commit, state }, payload) {
+        updateCard({ commit, state }, payload) {
             commit(types.UPDATE, state.cards.map(
                 card => card.id === payload.id ? payload : card
             ));
         },
-        [types.DELETE]({ commit, state }) {
-            commit(types.DELETE, state.cards.filter(({ checked }) => !checked));
+        deleteCards({ commit, state }) {
+            commit(types.UPDATE, state.cards.filter(({ checked }) => !checked));
         },
-        [types.READONLY]({ commit, state }) {
+        toggleReadonly({ commit, state }) {
             commit(types.READONLY, !state.readonly);
         }
     }

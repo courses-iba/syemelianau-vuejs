@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import styles from './AppCard.module.css';
+import styles from '@/components/AppCard/AppCard.module.css';
 
 export default {
   props: {

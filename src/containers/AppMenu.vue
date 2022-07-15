@@ -13,9 +13,10 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { Delete, Plus } from 'mdue';
+
 import AppCheckbox from '@/components/AppCheckbox';
-import * as types from '@/store/mutation-types';
-import { iButton } from '../styles/AppButton.module.css';
+import * as types from '@/store/mutation.types';
+import { iButton } from '@/styles/AppButton.module.css';
 
 export default {
   components: {
@@ -35,9 +36,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      handleAdd: types.CREATE,
-      handleDelete: types.DELETE,
-      handleReadonly: types.READONLY
+      handleAdd: 'createCard',
+      handleDelete: 'deleteCards',
+      handleReadonly: 'toggleReadonly'
     })
   }
 };

@@ -1,14 +1,16 @@
 <template>
   <div v-if="loading" :class="[styles.card, styles.load]">
-    <SyncLoader color="#36d7b7" :class="styles.loader" />
+    <SyncLoader :color="loader" :class="styles.loader" />
   </div>
   <slot v-else />
 </template>
 
 <script>
 import SyncLoader from 'vue-spinner/src/SyncLoader';
+
 import { randomState } from '@/utils';
-import styles from './AppCard.module.css';
+import styles from '@/components/AppCard/AppCard.module.css';
+import { mapState } from 'vuex';
 
 export default {
   components: {
@@ -21,6 +23,7 @@ export default {
       timeout: null
     };
   },
+  computed: mapState(['loader']),
   mounted() {
     this.timeout = setTimeout(() => {
       this.loading = false;
