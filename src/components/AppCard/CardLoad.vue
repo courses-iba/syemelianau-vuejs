@@ -7,6 +7,7 @@
 
 <script>
 import SyncLoader from 'vue-spinner/src/SyncLoader';
+import { randomState } from '@/utils';
 import styles from './AppCard.module.css';
 
 export default {
@@ -16,13 +17,17 @@ export default {
   data() {
     return {
       styles,
-      loading: true
+      loading: true,
+      timeout: null
     };
   },
-  created() {
-    setTimeout(() => {
+  mounted() {
+    this.timeout = setTimeout(() => {
       this.loading = false;
-    }, Math.floor(Math.random() * 3000));
+    }, randomState() * 1000);
+  },
+  unmounted() {
+    clearTimeout(this.timeout);
   }
 };
 </script>

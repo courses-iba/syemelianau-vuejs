@@ -8,16 +8,16 @@
         @edit="editTitle"
     >
       <div v-if="isEdit" :class="styles.buttons">
-        <button :class="iButton" @click="editCard">
-          <Check :style="iconStyle" />
+        <button :class="iButton" @click="toggleConfirm">
+          <Check :style="iDefault" />
         </button>
         <button :class="iButton" @click="toggleEdit">
-          <Close :style="iconStyle" />
+          <Close :style="iDefault" />
         </button>
       </div>
       <div v-else :class="styles.buttons">
         <button :class="iButton" @click="toggleEdit">
-          <Pencil :style="iconStyle" />
+          <Pencil :style="iDefault" />
         </button>
       </div>
     </CardHeader>
@@ -33,10 +33,13 @@
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState } from 'vuex';
 import { Pencil, Close, Check } from 'mdue';
 import AppDivider from '@/components/AppDivider';
 import CardHeader from '@/components/AppCard/CardHeader';
 import CardBody from '@/components/AppCard/CardBody';
+import * as types from '@/store/mutation-types';
+import { randomState } from '@/utils';
 import styles from './AppCard.module.css';
 import { iButton } from '../../styles/AppButton.module.css';
 
@@ -50,23 +53,21 @@ export default {
     CardBody
   },
   props: {
-    checked: [Number, null],
-    readonly: Boolean,
-    content: {
-      title: String,
-      description: String
-    }
+    id: String,
+    content: { title: String, description: String },
+    checked: [Number, null]
   },
   data() {
     return {
       styles,
       iButton,
       isEdit: !!this.checked,
-      newContent: this.content,
-      iconStyle: { color: '#586069', fontSize: '24px' }
+      newContent: this.content
     };
   },
   computed: {
+    ...mapState(['readonly']),
+    ...mapGetters(['iDefault']),
     color() {
       return `card${this.checked}`;
     }
@@ -79,22 +80,30 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      handleEdit: types.UPDATE
+    }),
     toggleChecked() {
-      const randomState = Math.floor(Math.random() * 5) + 1;
       if (!(this.isEdit && this.checked)) {
-        this.$emit('check', this.isEdit || this.checked ? null : randomState);
+        this.handleEdit({
+          id: this.id,
+          content: this.content,
+          checked: this.isEdit || this.checked ? null : randomState()
+        });
       }
     },
-    toggleEdit(e) {
+    handleButtonPress(e) {
       e?.stopPropagation();
-      this.checked && this.$emit('check', null);
       this.isEdit = !this.isEdit;
-      this.newContent = this.content;
     },
-    editCard(e) {
-      e?.stopPropagation();
-      this.$emit('edit', this.newContent);
-      this.toggleEdit();
+    toggleConfirm(e) {
+      this.handleButtonPress(e);
+      this.handleEdit({ id: this.id, content: this.newContent, checked: null });
+    },
+    toggleEdit(e) {
+      this.handleButtonPress(e);
+      this.handleEdit({ id: this.id, content: this.content, checked: null });
+      this.newContent = this.content;
     },
     editTitle(title) {
       this.newContent = { ...this.newContent, title };

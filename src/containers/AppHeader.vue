@@ -1,12 +1,20 @@
 <template>
-  <header class="header">{{ title }}</header>
+  <header class="header">
+    <span class="title">{{ title }}</span>
+    <div class="badge">{{ count }}</div>
+  </header>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   props: {
     title: String
-  }
+  },
+  computed: mapGetters({
+    count: 'cardsCount'
+  })
 };
 </script>
 
@@ -17,8 +25,22 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   font-size: 2em;
   font-weight: bold;
-  border-bottom: 1px solid #e1e4e8;
+}
+
+.badge {
+  margin-right: 2vw;
+  padding: 0 1vw;
+  background: red;
+  color: white;
+  border-radius: 3em;
 }
 </style>

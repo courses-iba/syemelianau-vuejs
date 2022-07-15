@@ -1,11 +1,17 @@
 <template>
   <div class="content">
-    <slot />
+    <CardList placeholder="Cards not found" />
   </div>
 </template>
 
 <script>
-export default {};
+import CardList from '@/components/CardList';
+
+export default {
+  components: {
+    CardList
+  }
+};
 </script>
 
 <style scoped>

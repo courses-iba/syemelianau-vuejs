@@ -1,18 +1,14 @@
 <template>
   <div class="list">
-    <CardLoad v-for="{id, content, checked} in cards" :key="id">
-      <AppCard
-          :content="content"
-          :checked="checked"
-          :readonly="readonly"
-          @edit="newContent => $emit('editCard', id, newContent)"
-          @check="newCheck => $emit('checkCard', id, newCheck)"
-      />
+    <span v-if="isEmpty" class="empty">{{ placeholder }}</span>
+    <CardLoad v-else v-for="card in cards" :key="card.id">
+      <AppCard v-bind="card" />
     </CardLoad>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import AppCard from '@/components/AppCard/AppCard';
 import CardLoad from '@/components/AppCard/CardLoad';
 
@@ -22,15 +18,13 @@ export default {
     CardLoad
   },
   props: {
-    cards: {
-      id: Number,
-      content: {
-        title: String,
-        description: String
-      },
-      checked: [Number, null]
-    },
-    readonly: Boolean
+    placeholder: String
+  },
+  computed: {
+    ...mapState(['cards']),
+    isEmpty() {
+      return !this.$store.getters.cardsCount;
+    }
   }
 };
 </script>
@@ -40,5 +34,10 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.empty {
+  color: red;
+  text-align: center;
 }
 </style>

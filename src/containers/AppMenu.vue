@@ -1,11 +1,46 @@
 <template>
   <nav class="menu">
-    <slot />
+    <AppCheckbox name="Readonly" :checked="readonly" @change="handleReadonly" />
+    <button :class="iButton" @click="handleAdd">
+      <Plus :style="iAction" />
+    </button>
+    <button :class="iButton" @click="handleDelete">
+      <Delete :style="iAction" />
+    </button>
   </nav>
 </template>
 
 <script>
-export default {};
+import { mapActions, mapGetters, mapState } from 'vuex';
+import { Delete, Plus } from 'mdue';
+import AppCheckbox from '@/components/AppCheckbox';
+import * as types from '@/store/mutation-types';
+import { iButton } from '../styles/AppButton.module.css';
+
+export default {
+  components: {
+    AppCheckbox,
+    Delete,
+    Plus
+  },
+  data() {
+    return {
+      types,
+      iButton
+    };
+  },
+  computed: {
+    ...mapState(['readonly']),
+    ...mapGetters(['iAction'])
+  },
+  methods: {
+    ...mapActions({
+      handleAdd: types.CREATE,
+      handleDelete: types.DELETE,
+      handleReadonly: types.READONLY
+    })
+  }
+};
 </script>
 
 <style scoped>
