@@ -2,19 +2,17 @@
   <div class="app">
     <AppHeader title="Vue App" />
     <AppMenu />
-    <AppContent />
+    <RouterView />
   </div>
 </template>
 
 <script>
-import AppContent from '@/containers/AppContent';
 import AppMenu from '@/containers/AppMenu';
 import AppHeader from '@/containers/AppHeader';
 
 export default {
   name: 'App',
   components: {
-    AppContent,
     AppHeader,
     AppMenu
   }
