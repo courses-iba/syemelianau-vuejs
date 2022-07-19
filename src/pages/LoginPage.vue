@@ -1,47 +1,59 @@
 <template>
   <div class="login">
-    <form class="card">
-      <div class="element">
-        <label>Username: </label>
-        <input
-            class="input"
-            name="username"
-            type="text"
-            :value="credentials.username"
-            @onChange="e => setCredentials({ ...credentials, username: e.target.value })"
-        />
-      </div>
-      <div class="element">
-        <label>Password: </label>
-        <input
-            class="input"
-            name="password"
-            type="password"
-            :value="credentials.password"
-            @onChange="e => setCredentials({ ...credentials, password: e.target.value })"
-        />
-      </div>
-      <div class="element">
-        <button class="input button" type="submit">Login</button>
+    <form class="card" @submit="handleSubmit">
+      <AppInput type="email" name="email" placeholder="example@mail.com" />
+      <AppInput type="password" name="password" placeholder="12345678" />
+      <div :class="styles.element">
+        <button
+            class="button"
+            :class="styles.input"
+            :disabled="isSubmitting"
+            type="submit"
+        >
+          Login
+        </button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import { useStore } from 'vuex';
+import { useForm } from 'vee-validate';
+import { object, string } from 'yup';
+
+import AppInput from '@/components/AppInput';
+import styles from '@/styles/AppInput.module.css';
+
 export default {
-  data() {
+  components: { AppInput },
+  setup() {
+    const store = useStore();
+    const validationSchema = object().shape({
+      email: string()
+          .email('Invalid email')
+          .required('Required'),
+      password: string()
+          .min(8, 'Too Short!')
+          .matches(/(\D\d)+/g, 'Must contain numbers & characters')
+          .required('Required')
+    });
+    const { isSubmitting, handleSubmit } = useForm({ validationSchema });
+
     return {
-      credentials: {
-        username: '',
-        password: ''
-      }
+      isSubmitting,
+      handleSubmit: handleSubmit(values => {
+        setTimeout(() => {
+          store.dispatch('login', values);
+          alert(JSON.stringify(values, null, 2));
+        }, 400);
+      })
     };
   },
-  methods: {
-    setCredentials(credentials) {
-      this.credentials = credentials;
-    }
+  data() {
+    return {
+      styles
+    };
   }
 };
 </script>
@@ -64,20 +76,6 @@ export default {
   border: 1px solid #e1e4e8;
   border-radius: 6px;
   transition: 0.3s;
-}
-
-.element {
-  display: flex;
-  flex-direction: column;
-  padding: 1vh 0;
-}
-
-.input {
-  padding: 1vh;
-  background: none;
-  border: 1px solid #e1e4e8;
-  border-radius: 6px;
-  outline: none;
 }
 
 .button {

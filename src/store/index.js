@@ -17,7 +17,8 @@ export const store = createStore({
             loading: true,
             error: null,
             iSize: { fontSize: '24px' },
-            loader: '#36d7b7'
+            loader: '#36d7b7',
+            credentials: { email: '', password: '' }
         };
     },
     getters: {
@@ -46,7 +47,10 @@ export const store = createStore({
         },
         [types.ERROR](state, payload) {
             state.error = payload;
-        }
+        },
+        [types.LOGIN](state, payload) {
+            state.credentials = payload;
+        },
     },
     actions: {
         getCards({ commit }) {
@@ -87,6 +91,9 @@ export const store = createStore({
         },
         toggleReadonly({ commit, state }) {
             commit(types.READONLY, !state.readonly);
+        },
+        login({ commit }, payload) {
+            commit(types.LOGIN, payload);
         }
     }
 });

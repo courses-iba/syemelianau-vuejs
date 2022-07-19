@@ -12,10 +12,12 @@
     "core-js": "^3.8.3",
     "mdue": "^0.1.4",
     "uuid": "^8.3.2",
+    "vee-validate": "^4.6.2",
     "vue": "^3.2.13",
     "vue-router": "^4.1.2",
     "vue-spinner": "^1.0.4",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
