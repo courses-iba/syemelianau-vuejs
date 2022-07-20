@@ -1,1 +1,1 @@
-export const randomState = () => Math.floor(Math.random() * 5) + 1;
+export const randomState = () => Math.floor(Math.random() * 5) + 1

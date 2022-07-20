@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import CardList from '@/components/CardList';
+import CardList from '@/components/CardList'
 
 export default {
   components: {
-    CardList
-  }
-};
+    CardList,
+  },
+}
 </script>
 
 <style scoped>

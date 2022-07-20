@@ -1,47 +1,55 @@
 <template>
   <div class="list">
-    <GridLoader v-if="loading" :color="loader" :class="styles.loader" />
-    <span v-else-if="error" class="empty">{{ error }}</span>
+    <GridLoader v-if="cardStore.loading" :color="pageStore.loader" :class="styles.loader" />
+    <span v-else-if="cardStore.error" class="empty">{{ cardStore.error }}</span>
     <span v-else-if="isEmpty" class="empty">{{ placeholder }}</span>
-    <CardLoad v-else v-for="card in cards" :key="card.id">
+    <CardLoad v-else v-for="card in cardStore.cards" :key="card.id">
       <AppCard v-bind="card" />
     </CardLoad>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import GridLoader from 'vue-spinner/src/GridLoader';
+import GridLoader from 'vue-spinner/src/GridLoader'
 
-import AppCard from '@/components/AppCard/AppCard';
-import CardLoad from '@/components/AppCard/CardLoad';
-import styles from '@/components/AppCard/AppCard.module.css';
+import AppCard from '@/components/AppCard/AppCard'
+import CardLoad from '@/components/AppCard/CardLoad'
+import styles from '@/components/AppCard/AppCard.module.css'
+import { useCardStore } from '@/store/card'
+import { usePageStore } from '@/store/page'
 
 export default {
   components: {
     GridLoader,
     AppCard,
-    CardLoad
+    CardLoad,
+  },
+  setup() {
+    const cardStore = useCardStore()
+    const pageStore = usePageStore()
+
+    return {
+      cardStore,
+      pageStore,
+    }
   },
   data() {
     return {
-      styles
-    };
-  },
-  props: {
-    placeholder: String
-  },
-  computed: {
-    ...mapState(['cards', 'loading', 'error', 'loader']),
-    isEmpty() {
-      return !this.$store.getters.cardsCount;
+      styles,
     }
   },
-  methods: mapActions(['getCards']),
+  props: {
+    placeholder: String,
+  },
+  computed: {
+    isEmpty() {
+      return !this.cardStore.cardsCount
+    },
+  },
   mounted() {
-    this.getCards();
-  }
-};
+    this.isEmpty && this.cardStore.getCards()
+  },
+}
 </script>
 
 <style scoped>

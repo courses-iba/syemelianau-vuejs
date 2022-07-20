@@ -5,10 +5,10 @@
       <AppInput type="password" name="password" placeholder="12345678" />
       <div :class="styles.element">
         <button
-            class="button"
-            :class="styles.input"
-            :disabled="isSubmitting"
-            type="submit"
+          class="button"
+          :class="styles.input"
+          :disabled="isSubmitting"
+          type="submit"
         >
           Login
         </button>
@@ -18,44 +18,44 @@
 </template>
 
 <script>
-import { useStore } from 'vuex';
-import { useForm } from 'vee-validate';
-import { object, string } from 'yup';
+import { useForm } from 'vee-validate'
+import { object, string } from 'yup'
 
-import AppInput from '@/components/AppInput';
-import styles from '@/styles/AppInput.module.css';
+import AppInput from '@/components/AppInput'
+import styles from '@/styles/AppInput.module.css'
+import { usePageStore } from '@/store/page'
 
 export default {
   components: { AppInput },
   setup() {
-    const store = useStore();
+    const store = usePageStore()
     const validationSchema = object().shape({
       email: string()
-          .email('Invalid email')
-          .required('Required'),
+        .email('Invalid email')
+        .required('Required'),
       password: string()
-          .min(8, 'Too Short!')
-          .matches(/(\D\d)+/g, 'Must contain numbers & characters')
-          .required('Required')
-    });
-    const { isSubmitting, handleSubmit } = useForm({ validationSchema });
+        .min(8, 'Too Short!')
+        .matches(/(\D\d|\d\D)+/g, 'Must contain numbers & characters')
+        .required('Required'),
+    })
+    const { isSubmitting, handleSubmit } = useForm({ validationSchema })
 
     return {
       isSubmitting,
       handleSubmit: handleSubmit(values => {
         setTimeout(() => {
-          store.dispatch('login', values);
-          alert(JSON.stringify(values, null, 2));
-        }, 400);
-      })
-    };
+          store.credentials = values
+          alert(JSON.stringify(values, null, 2))
+        }, 400)
+      }),
+    }
   },
   data() {
     return {
-      styles
-    };
-  }
-};
+      styles,
+    }
+  },
+}
 </script>
 
 <style scoped>

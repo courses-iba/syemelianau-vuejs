@@ -15,26 +15,26 @@
 </template>
 
 <script>
-import styles from '@/components/AppCard/AppCard.module.css';
+import styles from '@/components/AppCard/AppCard.module.css'
 
 export default {
   props: {
     title: String,
     newTitle: String,
     readonly: Boolean,
-    isEdit: Boolean
+    isEdit: Boolean,
   },
   data() {
     return {
-      styles
-    };
+      styles,
+    }
   },
   methods: {
     changeTitle(event) {
-      this.$emit('edit', event.target.value);
-    }
-  }
-};
+      this.$emit('edit', event.target.value)
+    },
+  },
+}
 </script>
 
 <style scoped></style>

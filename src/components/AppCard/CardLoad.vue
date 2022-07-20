@@ -1,38 +1,44 @@
 <template>
   <div v-if="loading" :class="[styles.card, styles.load]">
-    <SyncLoader :color="loader" :class="styles.loader" />
+    <SyncLoader :color="pageStore.loader" :class="styles.loader" />
   </div>
   <slot v-else />
 </template>
 
 <script>
-import SyncLoader from 'vue-spinner/src/SyncLoader';
+import SyncLoader from 'vue-spinner/src/SyncLoader'
 
-import { randomState } from '@/utils';
-import styles from '@/components/AppCard/AppCard.module.css';
-import { mapState } from 'vuex';
+import { randomState } from '@/utils'
+import styles from '@/components/AppCard/AppCard.module.css'
+import { usePageStore } from '@/store/page'
 
 export default {
   components: {
-    SyncLoader
+    SyncLoader,
+  },
+  setup() {
+    const pageStore = usePageStore()
+
+    return {
+      pageStore,
+    }
   },
   data() {
     return {
       styles,
       loading: true,
-      timeout: null
-    };
+      timeout: null,
+    }
   },
-  computed: mapState(['loader']),
   mounted() {
     this.timeout = setTimeout(() => {
-      this.loading = false;
-    }, randomState() * 1000);
+      this.loading = false
+    }, randomState() * 1000)
   },
   unmounted() {
-    clearTimeout(this.timeout);
-  }
-};
+    clearTimeout(this.timeout)
+  },
+}
 </script>
 
 <style scoped></style>

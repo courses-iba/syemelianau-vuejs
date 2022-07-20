@@ -1,21 +1,25 @@
 <template>
   <header class="header">
     <span class="title">{{ title }}</span>
-    <div class="badge">{{ count }}</div>
+    <div class="badge">{{ cardStore.cardsCount }}</div>
   </header>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { useCardStore } from '@/store/card'
 
 export default {
   props: {
-    title: String
+    title: String,
   },
-  computed: mapGetters({
-    count: 'cardsCount'
-  })
-};
+  setup() {
+    const cardStore = useCardStore()
+
+    return {
+      cardStore,
+    }
+  },
+}
 </script>
 
 <style scoped>

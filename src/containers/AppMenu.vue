@@ -1,21 +1,21 @@
 <template>
   <nav class="nav">
     <div :style="{display: 'flex'}">
-      <AppCheckbox name="Readonly" :checked="readonly" @change="handleReadonly" />
-      <button :class="iButton" @click="handleAdd">
-        <Plus :style="iAction" />
+      <AppCheckbox name="Readonly" :checked="pageStore.readonly" @change="pageStore.handleReadonly" />
+      <button :class="iButton" @click="cardStore.handleAdd">
+        <Plus :style="pageStore.iAction" />
       </button>
-      <button :class="iButton" @click="handleDelete">
-        <Delete :style="iAction" />
+      <button :class="iButton" @click="cardStore.handleDelete">
+        <Delete :style="pageStore.iAction" />
       </button>
     </div>
     <div class="menu">
       <RouterLink
-          v-for="{link, title} in routes"
-          :key="title"
-          :to="link"
-          :class="{active: link === active}"
-          @click="this.active = link"
+        v-for="{link, title} in routes"
+        :key="title"
+        :to="link"
+        :class="{active: link === active}"
+        @click="this.active = link"
       >
         {{ title }}
       </RouterLink>
@@ -25,50 +25,44 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
-import { Delete, Plus } from 'mdue';
+import { Delete, Plus } from 'mdue'
 
-import AppCheckbox from '@/components/AppCheckbox';
-import * as types from '@/store/mutation.types';
-import { iButton } from '@/styles/AppButton.module.css';
+import AppCheckbox from '@/components/AppCheckbox'
+import { iButton } from '@/styles/AppButton.module.css'
+import { usePageStore } from '@/store/page'
+import { useCardStore } from '@/store/card'
 
 export default {
   components: {
     AppCheckbox,
     Delete,
-    Plus
+    Plus,
+  },
+  setup() {
+    const cardStore = useCardStore()
+    const pageStore = usePageStore()
+
+    return {
+      cardStore,
+      pageStore,
+    }
   },
   data() {
     return {
-      types,
       iButton,
+      active: this.$route.path,
       routes: [
         { link: '/', title: 'Home' },
         { link: '/login', title: 'Login' },
       ],
-      active: this.$route.path
-    };
+    }
   },
-  computed: {
-    ...mapState(['readonly']),
-    ...mapGetters(['iAction'])
-  },
-  methods: {
-    ...mapActions({
-      handleAdd: 'createCard',
-      handleDelete: 'deleteCards',
-      handleReadonly: 'toggleReadonly'
+  mounted() {
+    this.$watch(() => this.$route.path, toPath => {
+      this.active = toPath
     })
   },
-  created() {
-    this.$watch(
-        () => this.$route.path,
-        toPath => {
-          this.active = toPath;
-        }
-    );
-  }
-};
+}
 </script>
 
 <style scoped>

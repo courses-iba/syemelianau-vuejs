@@ -7,16 +7,16 @@
 </template>
 
 <script>
-import AppMenu from '@/containers/AppMenu';
-import AppHeader from '@/containers/AppHeader';
+import AppMenu from '@/containers/AppMenu'
+import AppHeader from '@/containers/AppHeader'
 
 export default {
   name: 'App',
   components: {
     AppHeader,
-    AppMenu
-  }
-};
+    AppMenu,
+  },
+}
 </script>
 
 <style>

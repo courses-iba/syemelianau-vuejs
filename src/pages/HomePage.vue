@@ -3,11 +3,13 @@
 </template>
 
 <script>
-import AppContent from '@/containers/AppContent';
+import AppContent from '@/containers/AppContent'
 
 export default {
-  components: { AppContent }
-};
+  components: {
+    AppContent,
+  },
+}
 </script>
 
 <style scoped>

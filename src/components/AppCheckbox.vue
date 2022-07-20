@@ -1,8 +1,8 @@
 <template>
   <button
-      class="checkbox"
-      :class="{checked: checked,  unchecked: !checked}"
-      @click="$emit('change')"
+    class="checkbox"
+    :class="{checked: checked,  unchecked: !checked}"
+    @click="$emit('change')"
   >
     <CheckboxMarked v-if="checked" :style="iconStyle" />
     <CheckboxBlankOutline v-else :style="iconStyle" />
@@ -13,23 +13,23 @@
 </template>
 
 <script>
-import { CheckboxBlankOutline, CheckboxMarked } from 'mdue';
+import { CheckboxBlankOutline, CheckboxMarked } from 'mdue'
 
 export default {
   components: {
     CheckboxBlankOutline,
-    CheckboxMarked
+    CheckboxMarked,
   },
   props: {
     name: String,
-    checked: Boolean
+    checked: Boolean,
   },
   computed: {
     iconStyle() {
-      return { color: this.checked ? '#1675e0' : '#8e8e93', fontSize: '24px' };
-    }
-  }
-};
+      return { color: this.checked ? '#1675e0' : '#8e8e93', fontSize: '24px' }
+    },
+  },
+}
 </script>
 
 <style scoped>
