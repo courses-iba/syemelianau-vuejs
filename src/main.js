@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { PiniaLogger } from 'pinia-logger'
 import { createRouter, createWebHistory } from 'vue-router'
 
 import App from '@/App'
@@ -15,10 +16,16 @@ const routes = [
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage },
 ]
 
+const loggerConfig = {
+  disabled: process.env.NODE_ENV === 'production',
+}
+
+const logger = PiniaLogger(loggerConfig)
 const router = createRouter({ history: createWebHistory(), routes })
 const pinia = createPinia()
 const app = createApp(App)
 
+pinia.use(logger)
 app.use(router)
 app.use(pinia)
 
