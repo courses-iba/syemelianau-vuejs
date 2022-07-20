@@ -1,12 +1,15 @@
 <template>
   <header class="header">
-    <span class="title">{{ title }}</span>
+    <span class="title">
+      {{ (userStore.email && `Hello, ${userStore.role === 'admin' ? 'Admin' : userStore.email}!`) || title }}
+    </span>
     <div class="badge">{{ cardStore.cardsCount }}</div>
   </header>
 </template>
 
 <script>
 import { useCardStore } from '@/store/card'
+import { useUserStore } from '@/store/user'
 
 export default {
   props: {
@@ -14,9 +17,11 @@ export default {
   },
   setup() {
     const cardStore = useCardStore()
+    const userStore = useUserStore()
 
     return {
       cardStore,
+      userStore,
     }
   },
 }

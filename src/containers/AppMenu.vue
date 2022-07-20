@@ -1,7 +1,11 @@
 <template>
   <nav class="nav">
-    <div :style="{display: 'flex'}">
-      <AppCheckbox name="Readonly" :checked="pageStore.readonly" @change="pageStore.handleReadonly" />
+    <div v-show="userStore.role && (!pageStore.readonly || userStore.role === 'admin')" class="panel">
+      <AppCheckbox
+        v-show="userStore.role === 'admin'" name="Readonly"
+        :checked="pageStore.readonly"
+        @change="pageStore.handleReadonly"
+      />
       <button :class="iButton" @click="cardStore.handleAdd">
         <Plus :style="pageStore.iAction" />
       </button>
@@ -12,15 +16,15 @@
     <div class="menu">
       <RouterLink
         v-for="{link, title} in routes"
+        v-show="isSettings(link)"
         :key="title"
         :to="link"
         :class="{active: link === active}"
-        @click="this.active = link"
+        @click="() => handleClick(link)"
       >
-        {{ title }}
+        {{ isLoggedIn(link) ? 'Logout' : title }}
       </RouterLink>
     </div>
-    <span />
   </nav>
 </template>
 
@@ -31,6 +35,7 @@ import AppCheckbox from '@/components/AppCheckbox'
 import { iButton } from '@/styles/AppButton.module.css'
 import { usePageStore } from '@/store/page'
 import { useCardStore } from '@/store/card'
+import { useUserStore } from '@/store/user'
 
 export default {
   components: {
@@ -41,10 +46,12 @@ export default {
   setup() {
     const cardStore = useCardStore()
     const pageStore = usePageStore()
+    const userStore = useUserStore()
 
     return {
       cardStore,
       pageStore,
+      userStore,
     }
   },
   data() {
@@ -53,9 +60,23 @@ export default {
       active: this.$route.path,
       routes: [
         { link: '/', title: 'Home' },
+        { link: '/settings', title: 'Settings' },
         { link: '/login', title: 'Login' },
       ],
     }
+  },
+  methods: {
+    isLoggedIn(link) {
+      return this.userStore.role && link === '/login'
+    },
+    isSettings(link) {
+      return !(this.userStore.role !== 'admin' && link === '/settings')
+    },
+    handleClick(link) {
+      this.active = link
+      this.isLoggedIn(link) && this.userStore.logout()
+
+    },
   },
   mounted() {
     this.$watch(() => this.$route.path, toPath => {
@@ -69,13 +90,22 @@ export default {
 .nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1vh 2vw;
+  justify-content: center;
   border-bottom: 1px solid #e1e4e8;
 
   -webkit-box-shadow: 0 4px 2px -2px rgba(41, 41, 41, .25);
   -moz-box-shadow: 0 4px 2px -2px rgba(41, 41, 41, .25);
   box-shadow: 0 4px 2px -2px rgba(41, 41, 41, .25);
+}
+
+.nav > * {
+  flex: 1;
+}
+
+.menu, .panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu * {

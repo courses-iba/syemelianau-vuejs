@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <AppHeader title="Vue App" />
+    <AppHeader title="Notes App" />
     <AppMenu />
     <RouterView />
   </div>

@@ -4,7 +4,7 @@
       :class="styles.input"
       :style="{height: height}"
       :value="newDescription"
-      @input="changeContent"
+      @input="handleChange"
     />
   </div>
   <div v-else :class="styles.body">{{ description }}</div>
@@ -12,6 +12,7 @@
 
 <script>
 import styles from '@/components/AppCard/AppCard.module.css'
+import { calcHeight } from '@/utils'
 
 export default {
   props: {
@@ -27,12 +28,11 @@ export default {
   },
   computed: {
     height() {
-      const min = 2, max = this.newDescription.length / 20
-      return `${max < min ? min : max}em`
+      return calcHeight(this.newDescription.length)
     },
   },
   methods: {
-    changeContent(event) {
+    handleChange(event) {
       this.$emit('edit', event.target.value)
     },
   },

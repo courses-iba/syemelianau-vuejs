@@ -1,4 +1,4 @@
-# syemelianau-vuejs-udemy
+# syemelianau-vuejs
 
 ## Project setup
 

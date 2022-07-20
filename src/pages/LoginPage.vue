@@ -23,12 +23,14 @@ import { object, string } from 'yup'
 
 import AppInput from '@/components/AppInput'
 import styles from '@/styles/AppInput.module.css'
-import { usePageStore } from '@/store/page'
+import { useUserStore } from '@/store/user'
 
 export default {
-  components: { AppInput },
+  components: {
+    AppInput,
+  },
   setup() {
-    const store = usePageStore()
+    const userStore = useUserStore()
     const validationSchema = object().shape({
       email: string()
         .email('Invalid email')
@@ -41,12 +43,10 @@ export default {
     const { isSubmitting, handleSubmit } = useForm({ validationSchema })
 
     return {
+      userStore,
       isSubmitting,
       handleSubmit: handleSubmit(values => {
-        setTimeout(() => {
-          store.credentials = values
-          alert(JSON.stringify(values, null, 2))
-        }, 400)
+        userStore.login(values)
       }),
     }
   },
@@ -54,6 +54,15 @@ export default {
     return {
       styles,
     }
+  },
+  methods: {
+    handleLogin() {
+      this.userStore.email && this.$router.push({ name: 'Home' })
+    },
+  },
+  mounted() {
+    this.userStore.$subscribe(this.handleLogin)
+    this.handleLogin()
   },
 }
 </script>

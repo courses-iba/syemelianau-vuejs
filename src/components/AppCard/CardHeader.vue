@@ -4,7 +4,7 @@
       <span :class="styles.title">{{ title }}</span>
     </div>
     <div v-else-if="isEdit" :class="styles.header">
-      <input :class="styles.input" :value="newTitle" @change="changeTitle" />
+      <input :class="styles.input" :value="newTitle" @change="handleChange" />
       <slot />
     </div>
     <div v-else :class="styles.header">
@@ -30,7 +30,7 @@ export default {
     }
   },
   methods: {
-    changeTitle(event) {
+    handleChange(event) {
       this.$emit('edit', event.target.value)
     },
   },
